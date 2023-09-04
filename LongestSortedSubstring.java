@@ -34,5 +34,3 @@ public class LongestSortedSubstring {
     }
 }
 
-#1233212 
-
