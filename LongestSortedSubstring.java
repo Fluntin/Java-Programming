@@ -33,3 +33,6 @@ public class LongestSortedSubstring {
         return prevIndex <= currentIndex;
     }
 }
+
+#1233212 
+
