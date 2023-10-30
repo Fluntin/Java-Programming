@@ -1,18 +1,35 @@
-## Getting Started
+## Longest Sorted Substring Finder
 
-Welcome to the VS Code Java world. Here is a guideline to help you get started to write Java code in Visual Studio Code.
+This task involves finding the longest sorted substring within a longer string.
 
-## Folder Structure
+Your program should be able to take a longer string `S` as input and determine the length `L` of the longest substring that appears in sorted order.
 
-The workspace contains two folders by default, where:
+For example, consider `S = "DCBABCBA"` (with the longest sorted substring "ABC" highlighted in bold for clarity). In this case, the correct value of `L` is 3.
 
-- `src`: the folder to maintain sources
-- `lib`: the folder to maintain dependencies
+### Input
+A non-line-breaking string.
+You can assume that all characters in the string are either the digits 0-9, uppercase letters A-Z, or lowercase letters a-z. The correct alphabetical order for these characters is "0123456789ABCDEGHIJKLMNOPQRSTUVWXYZabcdefhijklmnopqrstuvwxyz".
 
-Meanwhile, the compiled output files will be generated in the `bin` folder by default.
+The length of `S` can be anywhere from 1 to 100,000,000 characters and is terminated by a line break or EOF.
 
-> If you want to customize the folder structure, open `.vscode/settings.json` and update the related settings there.
+### Output
+An integer `L`.
 
-## Dependency Management
+#### Sample Input 1
+```
+DCBABCBA
+```
 
-The `JAVA PROJECTS` view allows you to manage your dependencies. More details can be found [here](https://github.com/microsoft/vscode-java-dependency#manage-dependencies).
+#### Sample Output 1
+```
+3
+```
+
+#### Sample Input 2
+```
+$123 a b c A B C D a b c d 1234$
+```
+
+#### Sample Output 2
+```
+8
