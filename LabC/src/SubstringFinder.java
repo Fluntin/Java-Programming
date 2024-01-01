@@ -1,7 +1,7 @@
 import java.util.HashMap;
 import java.util.Map;
 
-// 
+// 123
 public class SubstringFinder {
     public static void main(String[] args) throws Exception {
         if (args.length < 2) {
