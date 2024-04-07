@@ -15,6 +15,7 @@ class Vegetable implements Comparable<Vegetable> {
     }
 
     @Override
+    // Use runtime polymorphism to compare objects of the same type
     public int compareTo(Vegetable other) {
         // First, compare by vegetable type (alphabetical order)
         int typeComparison = this.type.compareTo(other.type);
@@ -35,12 +36,17 @@ class Vegetable implements Comparable<Vegetable> {
     }
 
     @Override
+    // Not sure why I needed to override this method
+    // I think it's because the Vegetable object is being printed
+    // and the default toString() method prints the object's memory address
     public String toString() {
         return type + " " + country + " " + size + " " + unit;
     }
 }
 
 public class LargestVegetables {
+    // Main method to read input and execute the program
+    // The program reads a list of vegetable records from a file
     public static void main(String[] args) throws IOException {
         if (args.length != 1) {
             System.err.println("Usage: java LargestVegetables <input_file>");
