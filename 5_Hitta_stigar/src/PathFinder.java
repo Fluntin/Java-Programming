@@ -1,96 +1,112 @@
-import java.util.Scanner;
-import java.util.Set;
-import java.util.Stack;
-import java.util.TreeSet;
+import java.util.*;
 
 public class PathFinder {
-
-    // Change in row for up, down, left, right
-    // Down, up, left, right
-    private static final int[] MOVE_X = { -1, 1, 0, 0 }; // Final means that the value of the variable cannot be changed
-
-    // Change in column for up, down, left, right
-    // Down, up, left, right
-    private static final int[] MOVE_Y = { 0, 0, -1, 1 }; // Final means that the value of the variable cannot be changed
-
-    // Main method to read input and execute the path finding
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
+                
+        //--------------------------------------------------------------------------------
+        // First I get the dimensions of the matrix
+        //--------------------------------------------------------------------------------
+        int M = scanner.nextInt();
+        int N = scanner.nextInt();
 
-         // Read number of rows
-        int rows = scanner.nextInt();
+        //--------------------------------------------------------------------------------
+        // This part is necessary to consume the newline character after reading the integers
+        //--------------------------------------------------------------------------------
+        scanner.nextLine(); // Consume the newline character
 
-         // Read number of columns
-        int columns = scanner.nextInt();
-        scanner.nextLine(); // Consume the rest of the line
+        //--------------------------------------------------------------------------------
+        // Now I read the matrix from the input
+        //--------------------------------------------------------------------------------
+        char[][] grid = new char[M][];
 
-        // Read the grid of characters ROW by ROW!
-        // By writing char[][] grid = new char[rows][columns]; we create a 2D array of characters
-        char[][] grid = new char[rows][columns]; // char[rows][columns] means a predefined size!
-        for (int i = 0; i < rows; i++) {
-
-            // nextLine() reads the next line of input from the scanner as a String
-            // trim() removes leading and trailing whitespaces
-            // toCharArray() converts the string to a character array
+        // I read each row of the matrix and store it in the grid array
+        // I use the toCharArray() method to convert the string to a char array
+        // I use the trim() method to remove leading and trailing whitespaces
+        // I use the nextLine() method to read the entire line
+        for (int i = 0; i < M; i++) {
             grid[i] = scanner.nextLine().trim().toCharArray();
         }
+        
+        //--------------------------------------------------------------------------------
+        // Set to hold the characters that can reach from top to bottom
+        // I use a set to avoid duplicates and to keep the characters sorted
+        // This way I can print the characters in alphabetical order
+        //--------------------------------------------------------------------------------
+        Set<Character> connectingChars = new HashSet<>();
 
-        // Set to store valid path characters without duplicates, sorted
-        // We can use a TreeSet because it automatically sorts the characters
-        // and has O(log n) time complexity for add and contains operations
-        Set<Character> validPathChars = new TreeSet<>();
+        //--------------------------------------------------------------------------------
+        // This time I also need a visited matrix to keep track of visited cells
+        // I use a single visited matrix for all characters
+        //--------------------------------------------------------------------------------
+        boolean[][] visited = new boolean[M][N];
+        
+        //--------------------------------------------------------------------------------
+        // HashSet to track which characters have already been initiated for BFS
+        // This is to ensure that each character starts BFS only once tp save on time
+        //--------------------------------------------------------------------------------
+        Set<Character> initiated = new HashSet<>();
 
-        //Now we need to create a 2D array to keep track of visited cells
-        //This can be done by creating a boolean array of the same size as the grid!
-        boolean[][] visited = new boolean[rows][columns]; // Tracking visited cells
-
-        // Starting Deep-First Search from the first row
-        // This works because we know that the first row is always a valid starting point
-        // For each column in the first row, we start a DFS to explore the grid
-        // If we reach the last row, we add the character to the set of valid path characters
-        // If there are no valid paths, we output 0
-        for (int j = 0; j < columns; j++) {
-            if (!visited[0][j]) {
-                dfs(grid, 0, j, grid[0][j], visited, validPathChars);
+        //--------------------------------------------------------------------------------
+        // Start BFS from each cell in the top row for each unique character
+        // If a character can reach the bottom row, add it to the connectingChars set
+        //--------------------------------------------------------------------------------
+        for (int col = 0; col < N; col++) {
+            char startChar = grid[0][col];
+            if (!initiated.contains(startChar)) {  // Ensure each character starts BFS once
+                initiated.add(startChar);
+                if (bfs(0, col, startChar, grid, visited, M, N)) {
+                    connectingChars.add(startChar);
+                }
+                // Clear visited information for this character
+                for (boolean[] row : visited) {
+                    Arrays.fill(row, false);
+                }
             }
         }
-
-        // Outputting the valid paths or 0 if there are none
-        if (validPathChars.isEmpty()) {
+        
+        //--------------------------------------------------------------------------------
+        // Print the characters that can reach from top to bottom
+        // If no characters can reach, print 0
+        // Otherwise, print the characters in alphabetical order
+        //--------------------------------------------------------------------------------
+        if (connectingChars.isEmpty()) {
             System.out.println("0");
         } else {
-            validPathChars.forEach(System.out::print);
-            System.out.println();
+            List<Character> result = new ArrayList<>(connectingChars);
+            Collections.sort(result);
+            result.forEach(System.out::print);
         }
     }
 
-    // Depth-First Search (DFS) to explore the grid
-    // Coped from stackoverflow.com/questions/15597512/find-all-paths-in-a-2d-array
-    private static void dfs(char[][] grid, int startX, int startY, char pathChar, boolean[][] visited, Set<Character> validPathChars) {
-        Stack<int[]> stack = new Stack<>();
-        stack.push(new int[]{startX, startY});
-    
-        while (!stack.isEmpty()) {
-            int[] pos = stack.pop();
-            int row = pos[0];
-            int column = pos[1];
-    
-            if (row < 0 || row >= grid.length || column < 0 || column >= grid[0].length || grid[row][column] != pathChar || visited[row][column]) {
-                continue;
+    //--------------------------------------------------------------------------------
+    // BFS function to check if a character can reach the bottom row
+    //--------------------------------------------------------------------------------
+    private static boolean bfs(int startRow, int startCol, char charToCheck, char[][] grid, boolean[][] visited, int M, int N) {
+        Queue<int[]> queue = new LinkedList<>();
+        queue.offer(new int[]{startRow, startCol});
+        visited[startRow][startCol] = true;
+
+        int[] dr = {-1, 1, 0, 0};
+        int[] dc = {0, 0, -1, 1};
+
+        while (!queue.isEmpty()) {
+            int[] cell = queue.poll();
+            int row = cell[0], col = cell[1];
+
+            if (row == M - 1) {  // Check if the bottom row is reached
+                return true;
             }
-    
-            visited[row][column] = true;
-    
-            if (row == grid.length - 1) {
-                validPathChars.add(pathChar);
-            }
-    
-            for (int i = 0; i < 4; i++) {
-                int newRow = row + MOVE_X[i];
-                int newColumn = column + MOVE_Y[i];
-                stack.push(new int[]{newRow, newColumn});
+
+            for (int d = 0; d < 4; d++) {
+                int newRow = row + dr[d], newCol = col + dc[d];
+                if (newRow >= 0 && newRow < M && newCol >= 0 && newCol < N && !visited[newRow][newCol] && grid[newRow][newCol] == charToCheck) {
+                    queue.offer(new int[]{newRow, newCol});
+                    visited[newRow][newCol] = true;
+                }
             }
         }
+
+        return false;
     }
-    
 }
