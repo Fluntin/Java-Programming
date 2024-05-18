@@ -1,110 +1,141 @@
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Set;
+import java.util.HashSet;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+class Main {
+    static boolean[][] visitedCells;
 
-public class PathFinder {
-    public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
-                
-        //--------------------------------------------------------------------------------
-        // First I get the dimensions of the matrix
-        //--------------------------------------------------------------------------------
-        int M = scanner.nextInt();
-        int N = scanner.nextInt();
+    public static void main(String[] args) throws IOException {
+        findPaths();
+    }
 
-        //--------------------------------------------------------------------------------
-        // This part is necessary to consume the newline character after reading the integers
-        //--------------------------------------------------------------------------------
-        scanner.nextLine(); // Consume the newline character
+    //-----------------------------------------------------------------------------------
+    // Initializes the visitedCells array with the given dimensions
+    // All cells are marked as unvisited
+    //-----------------------------------------------------------------------------------
+    public static void initializeVisitedCells(int numRows, int numCols) {
+        visitedCells = new boolean[numRows][numCols];
+    }
 
-        //--------------------------------------------------------------------------------
-        // Now I read the matrix from the input
-        //--------------------------------------------------------------------------------
-        char[][] grid = new char[M][];
+    //-----------------------------------------------------------------------------------
+    // Marks a cell as visited
+    // The cell is identified by its row and column
+    //-----------------------------------------------------------------------------------
+    public static void markCellVisited(int row, int col) {
+        visitedCells[row][col] = true;
+    }
 
-        // I read each row of the matrix and store it in the grid array
-        // I use the toCharArray() method to convert the string to a char array
-        // I use the trim() method to remove leading and trailing whitespaces
-        // I use the nextLine() method to read the entire line
-        for (int i = 0; i < M; i++) {
-            grid[i] = scanner.nextLine().trim().toCharArray();
+    //-----------------------------------------------------------------------------------
+    // Checks if a cell has been visited
+    // Returns true if the cell has been visited, false otherwise
+    //-----------------------------------------------------------------------------------
+    public static boolean isCellVisited(int row, int col) {
+        return visitedCells[row][col];
+    }
+
+    //-----------------------------------------------------------------------------------
+    // Finds paths in a grid of characters
+    // The grid is read from the standard input
+    // The results are printed to the standard output
+    //-----------------------------------------------------------------------------------
+    public static void findPaths() throws IOException {
+        // Reads input
+        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+        String[] dimensions = reader.readLine().split("\\s+");
+        int numRows = Integer.parseInt(dimensions[0]);
+        int numCols = Integer.parseInt(dimensions[1]);
+
+        // Initializes data structures
+        HashMap<Character, Boolean> pathExists = new HashMap<>(); // Stores the characters for which a path exists
+        char[][] characterGrid = new char[numRows][numCols]; // Stores the characters in the grid
+        Set<Character> lastRowCharacters = new HashSet<>(); // Stores the characters in the last row
+
+        // Initializes the visitedCells array
+        initializeVisitedCells(numRows, numCols);
+        
+        //-----------------------------------------------------------------------------------
+        // Fills the characterGrid with input data
+        //-----------------------------------------------------------------------------------
+        for (int i = 0; i < numRows; i++) {
+            char[] currentRow = reader.readLine().toCharArray();
+            characterGrid[i] = currentRow;
         }
-        
-        //--------------------------------------------------------------------------------
-        // Set to hold the characters that can reach from top to bottom
-        // I use a set to avoid duplicates and to keep the characters sorted
-        // This way I can print the characters in alphabetical order
-        //--------------------------------------------------------------------------------
-        Set<Character> connectingChars = new HashSet<>();
 
-        //--------------------------------------------------------------------------------
-        // This time I also need a visited matrix to keep track of visited cells
-        // I use a single visited matrix for all characters
-        //--------------------------------------------------------------------------------
-        boolean[][] visited = new boolean[M][N];
-        
-        //--------------------------------------------------------------------------------
-        // HashSet to track which characters have already been initiated for BFS
-        // This is to ensure that each character starts BFS only once tp save on time
-        //--------------------------------------------------------------------------------
-        Set<Character> initiated = new HashSet<>();
-
-        //--------------------------------------------------------------------------------
-        // Start BFS from each cell in the top row for each unique character
-        // If a character can reach the bottom row, add it to the connectingChars set
-        //--------------------------------------------------------------------------------
-        for (int col = 0; col < N; col++) {
-            char startChar = grid[0][col];
-            if (!initiated.contains(startChar)) {  // Ensure each character starts BFS once
-                initiated.add(startChar);
-                if (bfs(0, col, startChar, grid, visited, M, N)) {
-                    connectingChars.add(startChar);
-                }
-                // Clear visited information for this character
-                for (boolean[] row : visited) {
-                    Arrays.fill(row, false);
-                }
-            }
+        //-----------------------------------------------------------------------------------
+        // Closes the reader
+        // Adds the characters from the last row to a set
+        //-----------------------------------------------------------------------------------
+        for (int i = 0; i < numCols; i++) {
+            char character = characterGrid[characterGrid.length - 1][i];
+            lastRowCharacters.add(character);
         }
-        
-        //--------------------------------------------------------------------------------
-        // Print the characters that can reach from top to bottom
-        // If no characters can reach, print 0
-        // Otherwise, print the characters in alphabetical order
-        //--------------------------------------------------------------------------------
-        if (connectingChars.isEmpty()) {
+
+        //-----------------------------------------------------------------------------------
+        // Checks for valid paths from the first row
+        // If a path exists, the character is added to the pathExists map
+        //-----------------------------------------------------------------------------------
+        for (int i = 0; i < numCols; i++) {
+            char character = characterGrid[0][i];
+            if (pathExists.containsKey(character) || !lastRowCharacters.contains(character)) continue;
+            if (doesPathExist(character, characterGrid, 1, i)) pathExists.put(character, true);
+        }
+
+        //-----------------------------------------------------------------------------------
+        // Output and sorting
+        // If no paths exist, prints 0
+        // Otherwise, prints the characters in sorted order
+        //-----------------------------------------------------------------------------------
+        if (pathExists.isEmpty()) {
             System.out.println("0");
         } else {
-            List<Character> result = new ArrayList<>(connectingChars);
-            Collections.sort(result);
-            result.forEach(System.out::print);
+            Set<Character> foundPaths = pathExists.keySet();
+            Character[] sortedCharacters = foundPaths.toArray(new Character[0]);
+            Arrays.sort(sortedCharacters);
+            StringBuilder result = new StringBuilder();
+            for (Character character : sortedCharacters) {
+                result.append(character);
+            }
+            System.out.println(result);
         }
     }
 
-    //--------------------------------------------------------------------------------
-    // BFS function to check if a character can reach the bottom row
-    //--------------------------------------------------------------------------------
-    private static boolean bfs(int startRow, int startCol, char charToCheck, char[][] grid, boolean[][] visited, int M, int N) {
-        Queue<int[]> queue = new LinkedList<>();
-        queue.offer(new int[]{startRow, startCol});
-        visited[startRow][startCol] = true;
+    //-----------------------------------------------------------------------------------
+    // Recursive function to check if a path exists
+    //-----------------------------------------------------------------------------------
+    public static boolean doesPathExist(char targetChar, char[][] grid, int currentRow, int currentCol) {
+        if (currentRow == grid.length) return true; // Reached the last row
+        if (isCellVisited(currentRow, currentCol)) return false; // Cell already visited
 
-        int[] dr = {-1, 1, 0, 0};
-        int[] dc = {0, 0, -1, 1};
+        //-----------------------------------------------------------------------------------
+        // Check if the current cell contains the target character
+        // If it does, mark the cell as visited and check the surrounding cells
+        //-----------------------------------------------------------------------------------
+        char[] row = grid[currentRow];
+        if (targetChar == row[currentCol]) {
+            markCellVisited(currentRow, currentCol);
+            int offset = 0;
 
-        while (!queue.isEmpty()) {
-            int[] cell = queue.poll();
-            int row = cell[0], col = cell[1];
-
-            if (row == M - 1) {  // Check if the bottom row is reached
-                return true;
+            //-----------------------------------------------------------------------------------
+            // Check right
+            while (currentCol + offset < row.length && targetChar == row[currentCol + offset]) {
+                if (doesPathExist(targetChar, grid, currentRow + 1, currentCol + offset)) return true;
+                offset++;
             }
 
-            for (int d = 0; d < 4; d++) {
-                int newRow = row + dr[d], newCol = col + dc[d];
-                if (newRow >= 0 && newRow < M && newCol >= 0 && newCol < N && !visited[newRow][newCol] && grid[newRow][newCol] == charToCheck) {
-                    queue.offer(new int[]{newRow, newCol});
-                    visited[newRow][newCol] = true;
-                }
+            //-----------------------------------------------------------------------------------
+            // Reset offset and check left
+            offset = 0;
+            while (currentCol - offset >= 0 && targetChar == row[currentCol - offset]) {
+                if (doesPathExist(targetChar, grid, currentRow + 1, currentCol - offset)) return true;
+                offset++;
             }
+
+            //-----------------------------------------------------------------------------------
+            // Check directly below
+            return doesPathExist(targetChar, grid, currentRow + 1, currentCol);
         }
 
         return false;

@@ -1,50 +1,71 @@
-# Largest Vegetables
+# Gronsaker - Vegetable Record Tracker
 
-This program reads a data file containing information about various vegetables grown in different countries and prints a sorted list of the largest vegetable of each type.
+This Java program reads vegetable records from the standard input, processes them to find the largest vegetable of each type from each country, and then outputs the records in a sorted order.
 
-**Note:** In this lab, you must create an additional class that can store vegetable data records and implement the `Comparable` interface to allow sorting of arrays of records.
+## How It Works
 
-The International Agriculture Association compiles an annual list of where the largest vegetables of various types have been produced. The list is primarily sorted by vegetable type (in alphabetical order), and secondarily by size (largest to smallest). Each country can only contribute one vegetable of each type. So, if Sweden were to produce the 17 largest cucumbers in a particular year, only the largest one counts. The second-largest cucumber on the list would be the largest vegetable from the other countries, and so on. If two countries tie for a record for a particular vegetable, they should be listed in alphabetical order.
+1. **Reading Input:**
+   - The program continuously reads input until there is no more data. 
+   - Each record consists of a vegetable type, a country name (which may consist of multiple words), a vegetable size, and a measurement unit.
 
-However, registration for the competition is decentralized, and each farmer can register as many vegetables as they want. This means that the input may contain multiple examples of the same type of vegetable from the same country. Your program should ensure that only the largest vegetable of each type is included for each country.
+2. **Processing Records:**
+   - The program uses a `HashMap` to keep track of the largest vegetable of each type from each country.
+   - A unique key is generated for each vegetable-country combination.
+   - If a new vegetable record has a larger size than the current one in the map, it updates the record.
 
-## Input
+3. **Sorting and Output:**
+   - The program collects all records from the map into a list and sorts them first by vegetable type (alphabetically), then by size (in descending order), and finally by country name (alphabetically).
+   - The sorted records are printed to the standard output.
 
-The input consists of a file where each line corresponds to a specific vegetable with information about where it was grown and how large it is, following this pattern:
+## Classes and Methods
 
-<Vegetable Type (one word)> <Country Name (one or more words)> <Size (integer)> <unit (one word)>
+### `Gronsaker`
 
-You can assume that all vegetables of the same type are measured in the same unit.
+#### `public static void main(String[] args)`
 
-You can assume that there are at most 1,000,000 lines in the input file.
+- Reads input and processes vegetable records.
+- Uses a `Scanner` to read from standard input.
+- Stores the largest vegetable records in a `HashMap`.
+- Sorts and prints the records.
 
-## Output
+### `VegetableRecord` implements `Comparable<VegetableRecord>`
 
-A sorted, line-separated list, with at most one record of each vegetable from each country. Each line follows the same pattern as described above.
+#### `public VegetableRecord(String vegetableType, String countryName, int size, String measurementUnit)`
 
-## Usage
+- Constructor to initialize a vegetable record.
+- **Parameters:**
+  - `vegetableType`: The type of vegetable.
+  - `countryName`: The country of origin.
+  - `size`: The size of the vegetable.
+  - `measurementUnit`: The unit of measurement for the size.
 
-To run the program, provide the input data file as described above and execute it. Here's an example of how to run it:
+#### `public int compareTo(VegetableRecord other)`
 
-```shell
-$ python largest_vegetables.py input.txt
+- Compares vegetable records for sorting.
+- **Returns:**
+  - Comparison result based on vegetable type, size, and country name.
+
+#### `public String toString()`
+
+- Formats the vegetable record as a string for output.
+- **Returns:**
+  - Formatted string representing the vegetable record.
+
+## Example
+
+### Input
+```
+Carrot USA 20 cm
+Carrot Canada 25 cm
+Carrot USA 15 cm
+Tomato Mexico 50 g
+Tomato USA 60 g
 ```
 
-The program will then display the sorted list.
-
-## Sample Input and Output
-
-### Sample Input
+### Output
 ```
-cucumber Spain 32 cm
-tomato Greece 19 hg
-cucumber United Arab Emirates 31 cm
-tomato Greece 21 hg
-```
-
-### Sample Output
-```
-cucumber Spain 32 cm
-cucumber United Arab Emirates 31 cm
-tomato Greece 21 hg
+Carrot Canada 25 cm
+Carrot USA 20 cm
+Tomato USA 60 g
+Tomato Mexico 50 g
 ```

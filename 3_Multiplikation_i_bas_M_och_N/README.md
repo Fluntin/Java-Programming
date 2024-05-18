@@ -1,67 +1,50 @@
-# Multiplication in Base N and M
+# Base Calculator
 
-This program reads two numbers, A and B, in base N and calculates their product C, then displays it in base M.
+This Java program reads two numbers in a given source base, multiplies them, and converts the result to a specified target base.
 
-## Overview
+## How It Works
 
-The program calculates the value C = A * B and outputs it in base M. For example, if N = 8, M = 10, and A and B are 123 and 1 respectively, then A is 83 in base 10, and C is 83 * 1 = 83, which is displayed in base 10.
+1. **Reading Input:**
+   - The program uses `Scanner` to read the source base, target base, and two numbers from the standard input (typically the console).
 
-The value V of a number T in base N is defined as:
-$$
-V = \sum_{i=0}^{k-1} t_i * N^i
-$$
+2. **Multiplying and Converting:**
+   - The `performMultiplication` method multiplies the two numbers after converting them to decimal (base 10).
+   - The result is then converted from decimal to the target base.
 
-Where k is the number of digits in T, t_i is the i-th digit in T, counting from the least significant digit starting at 0.
+## Methods
 
-For example, if T = 123 and N = 8, then k = 3, t_0 = 3, t_1 = 2, and t_2 = 3, and V = 83.
+### `performMultiplication(int sourceBase, int targetBase, String num1, String num2)`
 
-Digits in the range 0-9 are represented using regular Arabic numerals, followed by uppercase Latin alphabet letters (A-Z), where A represents 10, B represents 11, and so on up to Z, which represents 35.
+This method multiplies two numbers in a given source base and converts the result to the target base.
 
-## Input
+- **Parameters:**
+  - `sourceBase`: The base of the input numbers.
+  - `targetBase`: The base for the output result.
+  - `num1`: The first number in the source base.
+  - `num2`: The second number in the source base.
+- **Returns:**
+  - The product of the two numbers in the target base.
 
-The input format consists of:
-1. Two integers N and M on the first line.
-2. Two integers A and B on separate lines.
+### `convertToDecimal(String numberStr, int base)`
 
-You can assume that N and M are integers, both between 2 and 36 inclusive, and that A and B are positive integers not greater than Integer.MAX_VALUE.
+This method converts a number from any base to decimal (base 10).
 
-## Output
+- **Parameters:**
+  - `numberStr`: The number in the source base as a string.
+  - `base`: The base of the input number.
+- **Returns:**
+  - The decimal (base 10) equivalent of the input number.
 
-The program outputs an integer C in base M.
+### `convertToBase(long number, int base)`
 
-## Usage
+This method converts a decimal number to the specified target base.
 
-To run the program, provide the input as described above and execute it. Here's an example of how to run it:
+- **Parameters:**
+  - `number`: The number in decimal (base 10).
+  - `base`: The target base.
+- **Returns:**
+  - The number in the target base as a string.
 
-```shell
-$ python base_multiplication.py
-8 10
-123
-1
-```
+## Example
 
-The program will then display the result.
-
-## Sample Inputs and Outputs
-
-### Sample Input 1
-```
-8 10
-123
-1
-```
-### Sample Output 1
-```
-83
-```
-
-### Sample Input 2
-```
-32 17
-HEJ
-HOPP
-```
-### Sample Output 2
-```
-1865C51E7
-```
+If the user inputs `2` for the source base, `8` for the target base, `110` for the first number, and `101` for the second number, the program will output `144` since `110` (binary) * `101` (binary) = `10010` (binary), which is `22` in decimal and `144` in octal.

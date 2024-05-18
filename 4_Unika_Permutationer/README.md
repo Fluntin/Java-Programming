@@ -1,109 +1,42 @@
 # Unique Permutations
 
-This program reads a string `S` and prints a line-separated list of all unique permutations that can be made from the string, sorted in alphabetical order. The list should not contain any duplicates.
+This Java program reads a string input from the user and generates all unique permutations of the string. The permutations are then sorted alphabetically and printed.
 
-## Overview
+## How It Works
 
-Given a string `S`, the program generates and displays all unique possible permutations of the string in alphabetical order. For example, if `S = "ABA"`, the unique permutations are "AAB", "ABA", and "BAA".
+1. **Reading Input:**
+   - The program uses `Scanner` to read a string input from the standard input (typically the console).
 
-## Input
+2. **Generating Permutations:**
+   - The `generatePermutations` method is a recursive function that generates all permutations of the input string.
+   - A `Set` is used to store the permutations to ensure all permutations are unique.
 
-The input consists of a non-line-breaking string `S`, which comprises characters from 'A' to 'Z'.
+3. **Sorting and Printing:**
+   - The unique permutations are copied from the `Set` to a `List`.
+   - The list is then sorted alphabetically using `Collections.sort`.
+   - The sorted permutations are printed.
 
-## Output
+## Methods
 
-The program outputs a line-separated list, sorted alphabetically, with one permutation per line.
+### `generatePermutations(String prefix, String remaining, Set<String> permutations)`
 
-## Usage
+This method generates all permutations of the given string.
 
-To run the program, provide the input string as described above and execute it. Here's an example of how to run it:
+- **Parameters:**
+  - `prefix`: The current permutation being built.
+  - `remaining`: The characters left to be permuted.
+  - `permutations`: The set of unique permutations.
+- **Returns:**
+  - This method does not return a value but updates the `permutations` set.
 
-```shell
-$ python unique_permutations.py
-ABA
+## Example
+
+If the user inputs `abc`, the program will output:
 ```
-
-The program will then display the result.
-
-## Sample Inputs and Outputs
-
-### Sample Input 1
-```
-ABA
-```
-
-### Sample Output 1
-```
-AAB
-ABA
-BAA
-```
-
-### Sample Input 2
-```
-JAVAP
-```
-
-### Sample Output 2
-```
-AAJPV
-AAJVP
-AAPJV
-AAPVJ
-AAVJP
-AAVPJ
-AJAPV
-AJAVP
-AJPAV
-AJPVA
-AJVAP
-AJVPA
-APAJV
-APAVJ
-APJAV
-APJVA
-APVAJ
-APVJA
-AVAJP
-AVAPJ
-AVJAP
-AVJPA
-AVPAJ
-AVPJA
-JAAPV
-JAAVP
-JAPAV
-JAPVA
-JAVAP
-JAVPA
-JPAAV
-JPAVA
-JPVAA
-JVAAP
-JVAPA
-JVPAA
-PAAJV
-PAAVJ
-PAJAV
-PAJVA
-PAVAJ
-PAVJA
-PJAAV
-PJAVA
-PJVAA
-PVAAJ
-PVAJA
-PVJAA
-VAAJP
-VAAPJ
-VAJAP
-VAJPA
-VAPAJ
-VAPJA
-VJAAP
-VJAPA
-VJPAA
-VPAAJ
-VPAJA
-VPJAA
+abc
+acb
+bac
+bca
+cab
+cba
 ```

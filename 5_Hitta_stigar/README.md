@@ -1,74 +1,79 @@
-# Path Finder
+# Path Finder in a Grid
 
-This program reads a map and finds paths that connect two sides of the map. The map consists of an MxN matrix containing letters A-Z. The program will print all letters (in alphabetical order) that connect the top and bottom rows of the map through one or more paths. Two cells in the map are considered part of the same path if they are either directly above/below or adjacent to each other. Diagonals are not considered part of a path.
+This Java program reads a grid of characters from the user and determines which characters have valid paths from the first row to the last row of the grid. A valid path for a character is defined as a sequence of contiguous cells containing that character, moving only to the right, left, or directly below to the next row.
 
-If no paths exist, the program should print "0".
+## How It Works
 
-Note that paths can branch out, or there can be multiple valid paths with the same letter. However, the output should only contain each letter once, regardless of how many valid paths there are with that letter.
+1. **Reading Input:**
+   - The program uses `BufferedReader` to read the dimensions of the grid and the grid itself from the standard input (typically the console).
 
-## Input
+2. **Path Finding:**
+   - The `findPaths` method reads the grid and initializes data structures.
+   - It then checks each character in the first row to see if a valid path exists to the last row using the `doesPathExist` method.
 
-The input format consists of:
-1. Two integers, M and N, representing the number of rows and columns, in that order.
-2. The map itself, with M rows, each containing N characters.
+3. **Marking Cells:**
+   - The program uses a 2D boolean array `visitedCells` to keep track of visited cells to avoid revisiting them during the path search.
 
-You can assume that M and N are integers, both between 1 and 10,000, and that the map consists of uppercase letters.
+4. **Sorting and Output:**
+   - The characters with valid paths are sorted alphabetically and printed. If no paths are found, the program prints `0`.
 
-## Output
+## Methods
 
-The program outputs a string of letters in alphabetical order or the digit "0".
+### `initializeVisitedCells(int numRows, int numCols)`
 
-## Usage
+Initializes the `visitedCells` array with the given dimensions, marking all cells as unvisited.
 
-To run the program, provide the input as described above and execute it. Here's an example of how to run it:
+- **Parameters:**
+  - `numRows`: Number of rows in the grid.
+  - `numCols`: Number of columns in the grid.
 
-```shell
-$ python path_finder.py
-6 6
-AACACD
-ABBABD
-ABAAAD
-ABABAD
-AAABAD
-BBBBBD
+### `markCellVisited(int row, int col)`
+
+Marks a cell as visited.
+
+- **Parameters:**
+  - `row`: Row index of the cell.
+  - `col`: Column index of the cell.
+
+### `isCellVisited(int row, int col)`
+
+Checks if a cell has been visited.
+
+- **Parameters:**
+  - `row`: Row index of the cell.
+  - `col`: Column index of the cell.
+- **Returns:**
+  - `true` if the cell has been visited, `false` otherwise.
+
+### `findPaths()`
+
+Reads the grid from the input, initializes data structures, finds valid paths, and prints the results.
+
+### `doesPathExist(char targetChar, char[][] grid, int currentRow, int currentCol)`
+
+Recursively checks if a path exists for the target character from the current cell to the last row.
+
+- **Parameters:**
+  - `targetChar`: The character to find the path for.
+  - `grid`: The character grid.
+  - `currentRow`: The current row index.
+  - `currentCol`: The current column index.
+- **Returns:**
+  - `true` if a path exists, `false` otherwise.
+
+## Example
+
+If the user inputs the following grid:
+```
+3 4
+ABCA
+BCDB
+CACA
 ```
 
-The program will then display the result.
-
-## Sample Inputs and Outputs
-
-### Sample Input 1
+The program will output:
 ```
-6 6
-AACACD
-ABBABD
-ABAAAD
-ABABAD
-AAABAD
-BBBBBD
+A
+C
 ```
-
-### Sample Output 1
-```
-D
-```
-
-### Sample Input 2
-```
-10 10
-ABCDEFGHIJ
-ABCDEFGHIJ
-ABCDEFGHIJ
-ABCDEFGHIJ
-ABCDEFGHIJ
-ABCDEFGHIJ
-ABCDEFGHIJ
-ABCDEFGHIJ
-ABCDEFGHIJ
-KKKKKKKKKK
-```
-
-### Sample Output 2
-```
-0
-```
+indicating that valid paths exist for characters `A` and `C`.

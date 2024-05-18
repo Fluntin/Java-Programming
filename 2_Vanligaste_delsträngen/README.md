@@ -1,68 +1,38 @@
-# Most Frequent Substring Finder
+# Substring Finder
 
-This program is designed to find the most frequently occurring substring of a specified length in a longer string.
+This Java program reads a string and an integer `n` from the user and finds the most common substring of length `n` within the given string. If there are multiple substrings with the same highest frequency, the lexicographically smallest one is chosen.
 
-## Overview
+## How It Works
 
-The program takes as input a longer string `S` and an integer `n`, representing the desired length of the substring to search for. It then identifies the substring `d` of length `n` that occurs most frequently in the input string `S`. If multiple substrings of the specified length have the same highest frequency, the program returns the one that comes first in alphabetical order.
+1. **Reading Input:**
+   - The program uses `Scanner` to read an integer `n` and a string `S` from the standard input (typically the console).
+
+2. **Finding the Most Common Substring:**
+   - The `findCommonSub` method iterates through the input string to find the most frequent substring of length `n`.
+   - If multiple substrings have the same frequency, the `lexSmaller` method is used to determine the lexicographically smallest one.
+
+## Methods
+
+### `findCommonSub(int n, String S)`
+
+This method finds the most common substring of length `n` in the given string `S`.
+
+- **Parameters:**
+  - `n`: The length of the substring.
+  - `S`: The input string.
+- **Returns:**
+  - The most common substring of length `n`. If multiple substrings have the same frequency, the lexicographically smallest one is returned.
+
+### `lexSmaller(String s1, String s2)`
+
+This method compares two strings lexicographically based on a custom order and returns the smaller one.
+
+- **Parameters:**
+  - `s1`: The first string.
+  - `s2`: The second string.
+- **Returns:**
+  - The lexicographically smaller string.
 
 ## Example
 
-Suppose `n = 3` and `S = "ABCDABCDABADAB"`. The most frequent substring of length 3 in `S` is "DAB," which is returned by the program.
-
-## Input
-
-The program expects the following input format:
-
-1. An integer `n` on a separate line.
-2. A non-line-breaking string `S`, which can be up to 100,000,000 characters long, and is terminated with a line break or EOF.
-
-The characters in the input string are limited to digits 0-9, uppercase letters A-Z, and lowercase letters a-z. The correct alphabetical order for these characters is: "0123456789ABCDEGHIJKLMNOPQRSTUVWXYZabcdefhijklmnopqrstuvwxyz".
-
-## Output
-
-The program will output the most frequently occurring substring `d` of length `n` found in the input string `S`.
-
-## Usage
-
-To run the program, provide the input as described above and execute the program. Here's an example of how to run it:
-
-```shell
-$ python most_frequent_substring.py
-3
-ABCDABCDABADAB
-```
-
-The program will then output the result.
-
-## Sample Inputs and Outputs
-
-### Sample Input 1
-```
-3
-ABCDABCDABADAB
-```
-### Sample Output 1
-```
-DAB
-```
-
-### Sample Input 2
-```
-2
-123abcABCDabcd1234
-```
-### Sample Output 2
-```
-12
-```
-
-### Sample Input 3
-```
-2
-ABABBBBCD
-```
-### Sample Output 3
-```
-BB
-```
+If the user inputs the integer `3` and the string `abcabcabc`, the program will output `abc` since it is the most common substring of length `3`.
