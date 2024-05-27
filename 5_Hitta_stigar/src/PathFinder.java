@@ -17,7 +17,7 @@ class Main {
     // All cells are marked as unvisited
     //-----------------------------------------------------------------------------------
     public static void initializeVisitedCells(int numRows, int numCols) {
-        visitedCells = new boolean[numRows][numCols];
+        visitedCells = new boolean[numRows][numCols]; // Is a matrix of booleans
     }
 
     //-----------------------------------------------------------------------------------
@@ -33,7 +33,7 @@ class Main {
     // Returns true if the cell has been visited, false otherwise
     //-----------------------------------------------------------------------------------
     public static boolean isCellVisited(int row, int col) {
-        return visitedCells[row][col];
+        return visitedCells[row][col]; 
     }
 
     //-----------------------------------------------------------------------------------
